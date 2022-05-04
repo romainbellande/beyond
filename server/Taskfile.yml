@@ -1,0 +1,7 @@
+version: '3'
+
+tasks:
+  start:
+    desc: start server
+    cmds:
+      - cargo-watch -x run

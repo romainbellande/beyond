@@ -1,0 +1,33 @@
+version: '3'
+
+tasks:
+  desc: initialize client
+  init:
+    cmds:
+      - cargo install trunk
+      - rustup target add wasm32-unknown-unknown
+
+  start:
+    desc: start client
+    deps:
+      - task: serve
+      - task: gen:css:watch
+
+  serve:
+    cmds:
+      - trunk serve
+
+  gen:css:
+    env:
+      NODE_ENV: production
+    sources:
+      - ./src/**/*.rs
+      - ./index.html
+      - ./src/**/*.html
+      - ./src/**/*.css
+    cmds:
+      - tailwindcss -c ./tailwind.config.js -o ./dist/tailwind.css --minify
+
+  gen:css:watch:
+    cmds:
+      - task --watch "gen:css"

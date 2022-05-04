@@ -1,0 +1,22 @@
+version: '3'
+
+includes:
+  server:
+    taskfile: ./server/Taskfile.yml
+    dir: ./server
+  client:
+    taskfile: ./client/Taskfile.yml
+    dir: ./client
+
+tasks:
+  init:
+    desc: initialize projects
+    cmds:
+      - cargo install cargo-edit
+      - task: client:init
+
+  start:
+    desc: start all applications
+    deps:
+      - task: client:start
+      - task: server:start
