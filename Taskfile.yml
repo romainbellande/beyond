@@ -2,11 +2,17 @@ version: '3'
 
 includes:
   server:
-    taskfile: ./server/Taskfile.yml
-    dir: ./server
+    taskfile: ./packages/server/Taskfile.yml
+    dir: ./packages/server
   client:
-    taskfile: ./client/Taskfile.yml
-    dir: ./client
+    taskfile: ./packages/client/Taskfile.yml
+    dir: ./packages/client
+  core:
+    taskfile: ./packages/core/Taskfile.yml
+    dir: ./packages/core
+  gen-planet-name:
+    taskfile: ./packages/gen-planet-name/Taskfile.yml
+    dir: ./packages/gen-planet-name
 
 tasks:
   init:
@@ -18,5 +24,51 @@ tasks:
   start:
     desc: start all applications
     deps:
+      - task: mongo:start
       - task: client:start
       - task: server:start
+
+  mongo:start:
+    desc: start mongodb
+    cmds:
+      - docker-compose up -d && docker-compose logs -f mongo
+
+  check:
+    desc: check applications
+    cmds:
+      - task: client:shared:check
+      - task: server:shared:check
+      - task: core:shared:check
+      - task: gen-planet-name:shared:check
+
+  test:
+    desc: test applications
+    cmds:
+      - task: client:shared:test
+      - task: server:shared:test
+      - task: core:shared:test
+      - task: gen-planet-name:shared:test
+
+  lint:
+    desc: lint applications
+    cmds:
+      - task: client:shared:lint
+      - task: server:shared:lint
+      - task: core:shared:lint
+      - task: gen-planet-name:shared:lint
+
+  lint:fix:
+    desc: lint applications and fix them if possible
+    cmds:
+      - task: client:shared:lint:fix
+      - task: server:shared:lint:fix
+      - task: core:shared:lint:fix
+      - task: gen-planet-name:shared:lint:fix
+
+  format:
+    desc: format applications
+    cmds:
+      - task: client:shared:format
+      - task: server:shared:format
+      - task: core:shared:format
+      - task: gen-planet-name:shared:format

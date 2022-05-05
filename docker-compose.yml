@@ -1,0 +1,16 @@
+version: '3.2'
+
+services:
+  mongo:
+    image: 'mongo:5.0.6-focal'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: myuser
+      MONGO_INITDB_ROOT_PASSWORD: mypass
+      MONGO_INITDB_DATABASE: test
+    ports:
+      - 27040:27017
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data: {}

@@ -1,7 +1,12 @@
+mod fixtures;
+
 use actix::{Actor, StreamHandler};
-use actix_web::{web, App, Error, HttpRequest, HttpResponse, HttpServer};
+use actix_web::{middleware::Logger, web, App, Error, HttpRequest, HttpResponse, HttpServer};
 use actix_web_actors::ws;
-use server::{setup_logs};
+use dotenvy::dotenv;
+use server::{get_app_state, setup_logs};
+
+
 /// Define HTTP actor
 struct MyWs;
 
@@ -29,12 +34,21 @@ async fn index(req: HttpRequest, stream: web::Payload) -> Result<HttpResponse, E
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    dotenv().ok();
     setup_logs();
+    let app_state = get_app_state().await.clone();
+
+    fixtures::execute_fixtures(app_state.db.clone()).await;
 
     log::info!("starting HTTP server at http://127.0.0.1:3000");
 
-    HttpServer::new(|| App::new().route("/ws/", web::get().to(index)))
-        .bind(("127.0.0.1", 3000))?
-        .run()
-        .await
+    HttpServer::new(move || {
+        App::new()
+            .wrap(Logger::new("%r %U [%D ms][%s]"))
+            .app_data(web::Data::new(app_state.clone()))
+            .route("/ws/", web::get().to(index))
+    })
+    .bind(("127.0.0.1", 3000))?
+    .run()
+    .await
 }
