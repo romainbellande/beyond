@@ -1,7 +1,7 @@
-use serde::{Deserialize, Serialize};
 use crate::resources::Resource;
-use rand::Rng;
 use gen_planet_name::PlanetName;
+use rand::Rng;
+use serde::{Deserialize, Serialize};
 
 pub trait AppCollection {
     fn get_collection_name() -> String;
@@ -26,7 +26,7 @@ impl Planet {
     pub fn rand(filepath: String, count: u16) -> Vec<Planet> {
         let mut planets: Vec<Planet> = Vec::new();
 
-        for num in 0..count {
+        for _ in 0..count {
             planets.push(Planet::rand_one(filepath.clone()));
         }
 
@@ -44,7 +44,6 @@ impl AppCollection for Planet {
 pub struct Coordinates {
     pub x: i16,
     pub y: i16,
-    pub z: i16
 }
 
 impl Coordinates {
@@ -54,7 +53,6 @@ impl Coordinates {
         Coordinates {
             x: rng.gen_range(-100..100),
             y: rng.gen_range(-100..100),
-            z: rng.gen_range(-100..100),
         }
     }
 }

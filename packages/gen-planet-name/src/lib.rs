@@ -1,5 +1,5 @@
-use std::fs;
 use rand::Rng;
+use std::fs;
 mod suffixes;
 
 // https://github.com/sayamqazi/planet-name-generator/blob/master/script.py
@@ -11,17 +11,20 @@ pub struct PlanetName {
 }
 
 impl PlanetName {
-    pub fn new (filepath: String) -> Self {
-        PlanetName {
-            filepath,
-        }
+    pub fn new(filepath: String) -> Self {
+        PlanetName { filepath }
     }
 
     fn get_planets(&self) -> Vec<String> {
         let contents = fs::read_to_string(PLANETS_FILE.to_string())
             .expect("Something went wrong reading the file");
 
-        contents.split("\n").collect::<Vec<&str>>().iter().map(|x| x.to_string()).collect()
+        contents
+            .split("\n")
+            .collect::<Vec<&str>>()
+            .iter()
+            .map(|x| x.to_string())
+            .collect()
     }
 
     fn get_planets_syllables(&self) -> Vec<String> {
@@ -51,7 +54,6 @@ impl PlanetName {
             let lex: Vec<&str> = planet.split("-").collect::<Vec<&str>>();
             let mut i = 0;
 
-
             while i < lex.len() - 1 {
                 let first_index = syllables.iter().position(|x| x.eq(lex[i])).unwrap();
                 let second_index = syllables.iter().position(|x| x.eq(lex[i + 1])).unwrap();
@@ -59,7 +61,10 @@ impl PlanetName {
                 i += 1;
             }
 
-            let first_index = syllables.iter().position(|x| x == lex[lex.len() - 1]).unwrap();
+            let first_index = syllables
+                .iter()
+                .position(|x| x == lex[lex.len() - 1])
+                .unwrap();
             freq[first_index][size - 1] += 1;
         }
 
@@ -100,7 +105,6 @@ impl PlanetName {
         planet_name
     }
 }
-
 
 #[cfg(test)]
 mod tests {

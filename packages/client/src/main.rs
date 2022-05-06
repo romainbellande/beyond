@@ -1,6 +1,10 @@
 use client::start_websocket;
 use dioxus::prelude::*;
 
+mod map;
+
+use map::Map;
+
 fn main() {
     wasm_logger::init(wasm_logger::Config::default());
     start_websocket().unwrap();
@@ -10,5 +14,6 @@ fn main() {
 fn app(cx: Scope) -> Element {
     cx.render(rsx! {
         div { class: "bg-red-500", "hello, wasm!" }
+        Map {}
     })
 }

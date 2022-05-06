@@ -6,7 +6,6 @@ use actix_web_actors::ws;
 use dotenvy::dotenv;
 use server::{get_app_state, setup_logs};
 
-
 /// Define HTTP actor
 struct MyWs;
 
