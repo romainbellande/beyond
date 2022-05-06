@@ -18,7 +18,8 @@ tasks:
   init:
     desc: initialize projects
     cmds:
-      - cargo install cargo-edit
+      - cargo install cargo-watch
+      - npm install -g tailwindcss
       - task: client:init
 
   start:
@@ -36,10 +37,7 @@ tasks:
   check:
     desc: check applications
     cmds:
-      - task: client:shared:check
-      - task: server:shared:check
-      - task: core:shared:check
-      - task: gen-planet-name:shared:check
+      - cargo check --all
 
   test:
     desc: test applications
@@ -52,23 +50,21 @@ tasks:
   lint:
     desc: lint applications
     cmds:
-      - task: client:shared:lint
-      - task: server:shared:lint
-      - task: core:shared:lint
-      - task: gen-planet-name:shared:lint
+      - cargo clippy --all
 
   lint:fix:
     desc: lint applications and fix them if possible
     cmds:
-      - task: client:shared:lint:fix
-      - task: server:shared:lint:fix
-      - task: core:shared:lint:fix
-      - task: gen-planet-name:shared:lint:fix
+      - cargo clippy --fix --allow-dirty --all
 
   format:
     desc: format applications
     cmds:
-      - task: client:shared:format
-      - task: server:shared:format
-      - task: core:shared:format
-      - task: gen-planet-name:shared:format
+      - cargo +nightly fmt --all
+
+  fix:all:
+    desc: fix all
+    cmds:
+      - task: lint:fix
+      - task: format
+      - task: check

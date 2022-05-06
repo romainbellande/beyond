@@ -16,11 +16,11 @@ impl PlanetName {
     }
 
     fn get_planets(&self) -> Vec<String> {
-        let contents = fs::read_to_string(PLANETS_FILE.to_string())
-            .expect("Something went wrong reading the file");
+        let contents =
+            fs::read_to_string(PLANETS_FILE).expect("Something went wrong reading the file");
 
         contents
-            .split("\n")
+            .split('\n')
             .collect::<Vec<&str>>()
             .iter()
             .map(|x| x.to_string())
@@ -32,7 +32,7 @@ impl PlanetName {
         let mut syllables: Vec<String> = Vec::new();
 
         for planet in planets {
-            let lex: Vec<&str> = planet.split("-").collect::<Vec<&str>>();
+            let lex: Vec<&str> = planet.split('-').collect::<Vec<&str>>();
 
             for syllable in lex {
                 if !syllables.contains(&syllable.to_string()) {
@@ -51,7 +51,7 @@ impl PlanetName {
         let planets: Vec<String> = self.get_planets();
 
         for planet in planets {
-            let lex: Vec<&str> = planet.split("-").collect::<Vec<&str>>();
+            let lex: Vec<&str> = planet.split('-').collect::<Vec<&str>>();
             let mut i = 0;
 
             while i < lex.len() - 1 {
@@ -98,9 +98,9 @@ impl PlanetName {
         let mut rng = rand::thread_rng();
         let suffix_index = rng.gen_range(0..suffixes.len() - 1);
 
-        planet_name += &" ";
+        planet_name += " ";
 
-        planet_name += &suffixes[suffix_index];
+        planet_name += suffixes[suffix_index];
 
         planet_name
     }
@@ -112,7 +112,7 @@ mod tests {
 
     #[test]
     fn it_works() {
-        for n in 0..100 {
+        for _n in 0..100 {
             PlanetName::new("./planetes-example.txt".to_string()).generate();
         }
         let result = 2 + 2;
