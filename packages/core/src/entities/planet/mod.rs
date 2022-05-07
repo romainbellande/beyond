@@ -7,7 +7,7 @@ pub trait AppCollection {
     fn get_collection_name() -> String;
 }
 
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize, Eq)]
 pub struct Planet {
     pub name: Option<String>,
     pub resources: Vec<Resource>,
@@ -40,7 +40,7 @@ impl AppCollection for Planet {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize, Eq)]
 pub struct Coordinates {
     pub x: i16,
     pub y: i16,

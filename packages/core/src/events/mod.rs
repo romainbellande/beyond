@@ -1,5 +1,6 @@
 use crate::entities::planet::Planet;
 use serde::{Deserialize, Serialize};
+use crate::events::Event::{GetPlanetsResponse, GetPlanets};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum Event {
@@ -8,25 +9,50 @@ pub enum Event {
 }
 
 impl Event {
-    // pub fn new(event: Event) -> Event {
-    //     Event::<()> {
-    //         event,
-    //         data: None
-    //     }
-    // }
-
-    // pub fn new_with_data(event: Event, data: T) -> Self {
-    //     Event::<T> {
-    //         event,
-    //         data: Some(data),
-    //     }
-    // }
-
     pub fn into_u8_array(&self) -> Vec<u8> {
         bincode::serialize(&self).unwrap()
     }
 
-    pub fn from_u8_array(data: Vec<u8>) -> Self {
+    pub fn from_u8_array(data: &Vec<u8>) -> Self {
+        bincode::deserialize(&data[..]).unwrap()
+    }
+}
+
+impl Clone for Event {
+    fn clone(&self) -> Event {
+        match self {
+            Self::GetPlanetsResponse(planets) => GetPlanetsResponse(planets.to_vec()),
+            Self::GetPlanets => GetPlanets,
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub enum ServerEvent {
+    GetPlanetsResponse(Vec<Planet>),
+}
+
+impl ServerEvent {
+    pub fn into_u8_array(&self) -> Vec<u8> {
+        bincode::serialize(&self).unwrap()
+    }
+
+    pub fn from_u8_array(data: &Vec<u8>) -> Self {
+        bincode::deserialize(&data[..]).unwrap()
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub enum ClientEvent {
+    GetPlanets,
+}
+
+impl ClientEvent {
+    pub fn into_u8_array(&self) -> Vec<u8> {
+        bincode::serialize(&self).unwrap()
+    }
+
+    pub fn from_u8_array(data: &Vec<u8>) -> Self {
         bincode::deserialize(&data[..]).unwrap()
     }
 }
