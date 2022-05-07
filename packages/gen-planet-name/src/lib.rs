@@ -1,5 +1,5 @@
-use std::fs;
 use rand::Rng;
+use std::fs;
 mod suffixes;
 
 // https://github.com/sayamqazi/planet-name-generator/blob/master/script.py
@@ -11,17 +11,20 @@ pub struct PlanetName {
 }
 
 impl PlanetName {
-    pub fn new (filepath: String) -> Self {
-        PlanetName {
-            filepath,
-        }
+    pub fn new(filepath: String) -> Self {
+        PlanetName { filepath }
     }
 
     fn get_planets(&self) -> Vec<String> {
-        let contents = fs::read_to_string(PLANETS_FILE.to_string())
-            .expect("Something went wrong reading the file");
+        let contents =
+            fs::read_to_string(PLANETS_FILE).expect("Something went wrong reading the file");
 
-        contents.split("\n").collect::<Vec<&str>>().iter().map(|x| x.to_string()).collect()
+        contents
+            .split('\n')
+            .collect::<Vec<&str>>()
+            .iter()
+            .map(|x| x.to_string())
+            .collect()
     }
 
     fn get_planets_syllables(&self) -> Vec<String> {
@@ -29,7 +32,7 @@ impl PlanetName {
         let mut syllables: Vec<String> = Vec::new();
 
         for planet in planets {
-            let lex: Vec<&str> = planet.split("-").collect::<Vec<&str>>();
+            let lex: Vec<&str> = planet.split('-').collect::<Vec<&str>>();
 
             for syllable in lex {
                 if !syllables.contains(&syllable.to_string()) {
@@ -48,9 +51,8 @@ impl PlanetName {
         let planets: Vec<String> = self.get_planets();
 
         for planet in planets {
-            let lex: Vec<&str> = planet.split("-").collect::<Vec<&str>>();
+            let lex: Vec<&str> = planet.split('-').collect::<Vec<&str>>();
             let mut i = 0;
-
 
             while i < lex.len() - 1 {
                 let first_index = syllables.iter().position(|x| x.eq(lex[i])).unwrap();
@@ -59,7 +61,10 @@ impl PlanetName {
                 i += 1;
             }
 
-            let first_index = syllables.iter().position(|x| x == lex[lex.len() - 1]).unwrap();
+            let first_index = syllables
+                .iter()
+                .position(|x| x == lex[lex.len() - 1])
+                .unwrap();
             freq[first_index][size - 1] += 1;
         }
 
@@ -93,14 +98,13 @@ impl PlanetName {
         let mut rng = rand::thread_rng();
         let suffix_index = rng.gen_range(0..suffixes.len() - 1);
 
-        planet_name += &" ";
+        planet_name += " ";
 
-        planet_name += &suffixes[suffix_index];
+        planet_name += suffixes[suffix_index];
 
         planet_name
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -108,7 +112,7 @@ mod tests {
 
     #[test]
     fn it_works() {
-        for n in 0..100 {
+        for _n in 0..100 {
             PlanetName::new("./planetes-example.txt".to_string()).generate();
         }
         let result = 2 + 2;
