@@ -17,17 +17,6 @@ pub async fn start() -> std::io::Result<()> {
 
     log::info!("starting HTTP server at http://127.0.0.1:3000");
 
-    HttpServer::new(move || {
-        App::new()
-            .wrap(Logger::new("%r %U [%D ms][%s]"))
-            .route("/ws/", web::get().to(index))
-    })
-    .bind(("127.0.0.1", 3000))?
-    .run()
-    .await
-}
-
-async fn index(req: HttpRequest, stream: web::Payload) -> Result<HttpResponse, Error> {
     let config = Config::new();
 
     let database_manager = DatabaseManager::new(config.database_url, config.database_name);
@@ -36,7 +25,21 @@ async fn index(req: HttpRequest, stream: web::Payload) -> Result<HttpResponse, E
 
     fixtures::execute_fixtures(db.clone()).await;
 
-    let resp = ws::start(AppWs { db }, &req, stream);
+    HttpServer::new(move || {
+        App::new()
+            .wrap(Logger::new("%r %U [%D ms][%s]"))
+            .app_data(web::Data::new(AppWs { db: db.clone() }))
+            .route("/ws/", web::get().to(index))
+    })
+    .bind(("127.0.0.1", 3000))?
+    .run()
+    .await
+}
+
+async fn index(req: HttpRequest, stream: web::Payload, data: web::Data<AppWs>) -> Result<HttpResponse, Error> {
+    let resp = ws::start(AppWs {
+        db: data.db.clone()
+    }, &req, stream);
 
     println!("{:?}", resp);
 

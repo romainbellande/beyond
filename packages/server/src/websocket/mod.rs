@@ -5,7 +5,7 @@ use actix::prelude::*;
 use actix::{Actor, AsyncContext, StreamHandler, WrapFuture};
 use actix_web::web::Bytes;
 use actix_web_actors::ws;
-use beyond_core::events::Event;
+use beyond_core::events::{ClientEvent, ServerEvent};
 use mongodb::Database;
 
 pub struct AppWs {
@@ -23,10 +23,10 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for AppWs {
             Ok(ws::Message::Ping(msg)) => ctx.pong(&msg),
             Ok(ws::Message::Text(text)) => ctx.text(text),
             Ok(ws::Message::Binary(bin_req)) => {
-                let ws_event = Event::from_u8_array(bin_req.to_vec());
+                let ws_event = ClientEvent::from_u8_array(&bin_req.to_vec());
 
                 match ws_event {
-                    Event::GetPlanets => {
+                    ClientEvent::GetPlanets => {
                         let db = self.db.clone();
                         let planet_repository = PlanetRepository::new(db);
 
@@ -37,7 +37,7 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for AppWs {
                             let planets = planet_repository.find().await;
 
                             if let Some(planets) = planets {
-                                let bin_res = Event::GetPlanetsResponse(planets).into_u8_array();
+                                let bin_res = ServerEvent::GetPlanetsResponse(planets).into_u8_array();
                                 recipient.do_send(BinaryMessage(bin_res));
                             }
                         };

@@ -10,7 +10,7 @@ pub const WOOD: &str = "wood";
 pub const SAND: &str = "sand";
 pub const OIL: &str = "oil";
 
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize, Eq)]
 pub struct Resource {
     pub reference: String,
     pub density: u16, // from 0 to 100

@@ -1,22 +1,41 @@
 #[macro_use]
 extern crate log;
 
-mod event;
-mod map;
+mod components;
+mod switch;
 mod websocket;
+mod services;
+mod app_state;
 
-use dioxus::prelude::*;
-use map::Map;
+use yew::prelude::*;
+use yew_router::prelude::*;
+// use beyond_core::entities::planet::Planet;
+use switch::{switch, Route};
+use websocket::WebsocketService;
+use beyond_core::events::ClientEvent;
+pub struct AppState;
 
-fn app(cx: Scope) -> Element {
-    cx.render(rsx! {
-        div { class: "bg-red-500", "hello, wasm!" }
-        Map {}
-    })
+
+#[function_component(App)]
+fn app() -> Html {
+    let wss = WebsocketService::new();
+
+    let event = ClientEvent::GetPlanets;
+
+    let result = wss.tx.clone().try_send(event).ok();
+
+    if result.is_some() {
+        log::debug!("message sent successfully");
+    }
+
+    html! {
+        <BrowserRouter>
+            <Switch<Route> render={Switch::render(switch)} />
+        </BrowserRouter>
+    }
 }
 
 pub fn start() {
     wasm_logger::init(wasm_logger::Config::default());
-    websocket::start().unwrap();
-    dioxus::web::launch(app);
+    yew::start_app::<App>();
 }
