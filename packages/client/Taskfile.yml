@@ -1,32 +1,7 @@
 version: '3'
 
-includes:
-  shared:
-    taskfile: ../../SharedTaskfile.yml
-    dir: ./
-
 tasks:
   start:
     desc: start client
-    deps:
-      - task: serve
-      - task: gen:css:watch
-
-  serve:
     cmds:
-      - trunk serve
-
-  gen:css:
-    env:
-      NODE_ENV: production
-    sources:
-      - ./src/**/*.rs
-      - ./index.html
-      - ./src/**/*.html
-      - ./src/**/*.css
-    cmds:
-      - tailwindcss -c ./tailwind.config.js -o ./dist/tailwind.css --minify
-
-  gen:css:watch:
-    cmds:
-      - task --watch "gen:css"
+      - yarn start
