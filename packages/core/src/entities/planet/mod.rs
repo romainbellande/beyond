@@ -2,6 +2,7 @@ use crate::resources::Resource;
 use gen_planet_name::PlanetName;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
+use bson::oid::ObjectId;
 
 pub trait AppCollection {
     fn get_collection_name() -> String;
@@ -9,7 +10,9 @@ pub trait AppCollection {
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize, Eq)]
 pub struct Planet {
-    pub name: Option<String>,
+    #[serde(rename = "_id")]
+    pub id: String,
+    pub name: String,
     pub resources: Vec<Resource>,
     pub coordinates: Coordinates,
 }
@@ -17,8 +20,9 @@ pub struct Planet {
 impl Planet {
     pub fn rand_one(filepath: String) -> Self {
         Planet {
+            id: ObjectId::new().to_string(),
             coordinates: Coordinates::rand(),
-            name: Some(PlanetName::new(filepath).generate()),
+            name: PlanetName::new(filepath).generate(),
             resources: Resource::rand_list(),
         }
     }
@@ -51,8 +55,8 @@ impl Coordinates {
         let mut rng = rand::thread_rng();
 
         Coordinates {
-            x: rng.gen_range(-100..100),
-            y: rng.gen_range(-100..100),
+            x: rng.gen_range(0..100),
+            y: rng.gen_range(0..100),
         }
     }
 }

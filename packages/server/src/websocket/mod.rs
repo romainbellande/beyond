@@ -6,6 +6,7 @@ use actix::{Actor, AsyncContext, StreamHandler, WrapFuture};
 use actix_web::web::Bytes;
 use actix_web_actors::ws;
 use beyond_core::events::{ClientEvent, ServerEvent};
+use log::info;
 use mongodb::Database;
 
 pub struct AppWs {
@@ -37,6 +38,7 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for AppWs {
                             let planets = planet_repository.find().await;
 
                             if let Some(planets) = planets {
+                                info!("planets: {:?}", planets);
                                 let bin_res = ServerEvent::GetPlanetsResponse(planets).into_u8_array();
                                 recipient.do_send(BinaryMessage(bin_res));
                             }
