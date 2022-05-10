@@ -1,20 +1,19 @@
 #[macro_use]
 extern crate log;
 
+mod app_state;
 mod components;
+mod services;
 mod switch;
 mod websocket;
-mod services;
-mod app_state;
 
 use yew::prelude::*;
 use yew_router::prelude::*;
 // use beyond_core::entities::planet::Planet;
+use beyond_core::events::ClientEvent;
 use switch::{switch, Route};
 use websocket::WebsocketService;
-use beyond_core::events::ClientEvent;
 pub struct AppState;
-
 
 #[function_component(App)]
 fn app() -> Html {

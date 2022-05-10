@@ -8,12 +8,12 @@ pub enum Request {
     EventBusMsg(String),
 }
 
-pub struct EventBus {
-    link: AgentLink<EventBus>,
+pub struct PlanetsService {
+    link: AgentLink<PlanetsService>,
     subscribers: HashSet<HandlerId>,
 }
 
-impl Agent for EventBus {
+impl Agent for PlanetsService {
     type Reach = Context<Self>;
     type Message = ();
     type Input = ServerEvent;

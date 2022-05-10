@@ -25,7 +25,7 @@ tasks:
       - ./src/**/*.html
       - ./src/**/*.css
     cmds:
-      - tailwindcss -c ./tailwind.config.js -o ./dist/tailwind.css --minify
+      - tailwindcss -c ./tailwind.config.js -o ./src/css/tailwind.css --minify
 
   gen:css:watch:
     cmds:

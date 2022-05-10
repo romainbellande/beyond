@@ -1,6 +1,5 @@
 use crate::entities::planet::Planet;
 use serde::{Deserialize, Serialize};
-use crate::events::Event::{GetPlanetsResponse, GetPlanets};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum Event {
@@ -21,8 +20,8 @@ impl Event {
 impl Clone for Event {
     fn clone(&self) -> Event {
         match self {
-            Self::GetPlanetsResponse(planets) => GetPlanetsResponse(planets.to_vec()),
-            Self::GetPlanets => GetPlanets,
+            Self::GetPlanetsResponse(planets) => Event::GetPlanetsResponse(planets.to_vec()),
+            Self::GetPlanets => Event::GetPlanets,
         }
     }
 }
@@ -42,7 +41,15 @@ impl ServerEvent {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+impl Clone for ServerEvent {
+    fn clone(&self) -> ServerEvent {
+        match self {
+            Self::GetPlanetsResponse(planets) => ServerEvent::GetPlanetsResponse(planets.to_vec()),
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ClientEvent {
     GetPlanets,
 }

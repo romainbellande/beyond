@@ -1,14 +1,12 @@
-
-
 //! Web socket Service.
 // https://blog.devgenius.io/lets-build-a-websockets-project-with-rust-and-yew-0-19-60720367399f
-use futures::{SinkExt, StreamExt, channel::mpsc::Sender};
+use beyond_core::events::{ClientEvent, ServerEvent};
+use futures::{channel::mpsc::Sender, SinkExt, StreamExt};
 use gloo::net::websocket::{futures::WebSocket, Message};
 use wasm_bindgen_futures::spawn_local;
-use beyond_core::events::{ClientEvent, ServerEvent};
 
+use crate::services::planets_service::{PlanetsService, Request};
 use yew_agent::Dispatched;
-use crate::services::event_bus::{EventBus, Request};
 
 pub struct WebsocketService {
     pub tx: Sender<ClientEvent>,
@@ -22,7 +20,7 @@ impl WebsocketService {
 
         let (in_tx, mut in_rx) = futures::channel::mpsc::channel::<ClientEvent>(1000);
 
-        let mut event_bus = EventBus::dispatcher();
+        let mut planets_service = PlanetsService::dispatcher();
 
         spawn_local(async move {
             while let Some(s) = in_rx.next().await {
@@ -36,12 +34,19 @@ impl WebsocketService {
                 match msg {
                     Ok(Message::Text(data)) => {
                         log::debug!("from websocket: {}", data);
-                        // event_bus.send(Request::EventBusMsg(data));
+                        // event_bus.send(Request::PlanetsServiceMsg(data));
                     }
                     Ok(Message::Bytes(event_bytes)) => {
                         let event = ServerEvent::from_u8_array(&event_bytes);
                         log::debug!("from websocket: {:?}", event);
-                        event_bus.send(event);
+                        match event {
+                            ServerEvent::GetPlanetsResponse(_) => {
+                                planets_service.send(event);
+                            }
+                            unkown_message => {
+                                info!("unkown_message: {:?}", unkown_message);
+                            }
+                        }
                     }
                     Err(e) => {
                         log::error!("ws: {:?}", e)
