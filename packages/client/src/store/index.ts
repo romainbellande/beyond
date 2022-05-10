@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import planetsReducer from './planets';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import wsReducer from './ws/ws.slice';
+import { wsMiddleware } from './ws';
 
 // const reduxWebsocketMiddleware = reduxWebsocket();
 
@@ -12,7 +13,7 @@ export const store = configureStore({
     wsReducer,
     planetsReducer
   },
-  // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(wsMiddleware.middleware),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

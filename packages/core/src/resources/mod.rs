@@ -3,7 +3,6 @@ use rand::distributions::Distribution;
 use rand::distributions::WeightedIndex;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
-use wasm_bindgen::prelude::*;
 
 pub const MAX_RESOURCE: u8 = 6;
 pub const IRON: &str = "iron";
@@ -11,7 +10,7 @@ pub const WOOD: &str = "wood";
 pub const SAND: &str = "sand";
 pub const OIL: &str = "oil";
 
-#[wasm_bindgen]
+
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize, Eq)]
 pub struct Resource {
     pub reference: String,

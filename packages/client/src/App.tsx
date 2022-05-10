@@ -6,20 +6,23 @@ import { useAppDispatch, useAppSelector } from './store';
 import { WsMessage } from './interfaces/ws-message.interface';
 import { ws, setConnect } from './store/ws';
 import { selectPlanets, findPlanets } from './store/planets';
-import init, { greet } from './wasm/wasm';
 
 function App() {
   const planets = useAppSelector(selectPlanets);
+  const dispatch = useAppDispatch();
 
   ws.onopen = () => {
     setConnect(true);
-    findPlanets();
+    console.info('connected to websocket');
+    dispatch(findPlanets());
+  };
+
+  ws.onmessage = (e) => {
+    console.log('message received', e.data);
+    console.log(e.data);
   };
 
   console.log('planets', planets);
-  init().then(() => {
-    greet('toto');
-  });
 
   // dispatch(connect('ws://127.0.0.1:3000/ws/'));
   const wsMessage: WsMessage = {
