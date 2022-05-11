@@ -1,10 +1,14 @@
 import reduxWebsocket from '@giantmachines/redux-websocket';
 import { configureStore } from '@reduxjs/toolkit'
-import planetsReducer from './planets';
+import planetsReducer, { actions as planetsActions } from './planets';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import wsReducer from './ws/ws.slice';
 import { wsMiddleware } from './ws';
 
+
+export const actions = {
+  ...planetsActions
+};
 // const reduxWebsocketMiddleware = reduxWebsocket();
 
 export const store = configureStore({

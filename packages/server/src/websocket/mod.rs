@@ -1,3 +1,5 @@
+
+
 use std::ops::Deref;
 
 use crate::planets::PlanetRepository;
@@ -24,6 +26,8 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for AppWs {
             Ok(ws::Message::Text(text)) => ctx.text(text),
             Ok(ws::Message::Binary(bin_req)) => {
                 let ws_event = ClientEvent::from_u8_array(&bin_req.to_vec());
+
+                println!("received message: {:?}", ws_event);
 
                 match ws_event {
                     ClientEvent::GetPlanets => {

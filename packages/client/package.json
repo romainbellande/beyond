@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@craco/craco": "^6.4.3",
     "@giantmachines/redux-websocket": "^1.5.1",
     "@headlessui/react": "^1.6.1",
     "@heroicons/react": "^1.0.6",
@@ -15,20 +16,24 @@
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "classnames": "^2.3.1",
+    "lodash": "^4.17.21",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
+    "react-force-graph-3d": "^1.21.12",
     "react-redux": "^8.0.1",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
+    "three": "^0.140.2",
     "typescript": "^4.4.2",
     "web-vitals": "^2.1.0",
     "websocket": "^1.0.34"
   },
   "scripts": {
-    "start": "PORT=9000 react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "PORT=9000 craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject",
+    "eslint": "eslint ./src"
   },
   "eslintConfig": {
     "extends": [
@@ -49,10 +54,20 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.182",
     "@types/react-redux": "^7.1.24",
+    "@types/three": "^0.140.0",
     "@types/websocket": "^1.0.5",
+    "@typescript-eslint/eslint-plugin": "^5.23.0",
+    "@typescript-eslint/parser": "^5.23.0",
     "autoprefixer": "^10.4.7",
+    "eslint": "^7.32.0 || ^8.2.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-prettier": "^4.0.0",
     "postcss": "^8.4.13",
+    "prettier": "^2.6.2",
     "tailwindcss": "^3.0.24"
   }
 }
