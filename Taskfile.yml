@@ -50,11 +50,13 @@ tasks:
     desc: lint applications
     cmds:
       - cargo clippy --all
+      - task: client:lint
 
   lint:fix:
     desc: lint applications and fix them if possible
     cmds:
       - cargo clippy --fix --allow-dirty --all
+      - task: client:lint:fix
 
   format:
     desc: format applications

@@ -1,0 +1,27 @@
+{
+  "sourceRoot": "apps/beyond-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/beyond-e2e/cypress.json",
+        "devServerTarget": "beyond:serve:development"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "beyond:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/beyond-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["beyond"]
+}
