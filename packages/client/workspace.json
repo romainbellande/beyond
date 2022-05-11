@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "packageManager": "pnpm",
+  "projects": {
+    "beyond": "apps/beyond",
+    "beyond-e2e": "apps/beyond-e2e",
+    "ui": "libs/ui"
+  }
+}

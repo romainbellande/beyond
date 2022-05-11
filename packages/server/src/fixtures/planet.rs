@@ -12,7 +12,7 @@ pub async fn fixture(db: Database) {
         )
     });
 
-    let planets: Vec<Planet> = Planet::rand("./planets.txt".to_string(), 12);
+    let planets: Vec<Planet> = Planet::rand("./planets.txt".to_string(), 1200);
 
     collection
         .insert_many(planets.clone(), None)

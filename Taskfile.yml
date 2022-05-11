@@ -18,10 +18,7 @@ tasks:
   init:
     desc: initialize projects
     cmds:
-      - cargo install cargo-watch
-      - cargo install cargo-generate
-      - cargo install wasm-bindgen-cli
-      - cargo install trunk
+      - cargo install cargo-watch cargo-generate wasm-bindgen-cli wasm-pack trunk
       - rustup target add wasm32-unknown-unknown
       - npm install -g tailwindcss
 
@@ -45,7 +42,6 @@ tasks:
   test:
     desc: test applications
     cmds:
-      - task: client:shared:test
       - task: server:shared:test
       - task: core:shared:test
       - task: gen-planet-name:shared:test
@@ -54,11 +50,13 @@ tasks:
     desc: lint applications
     cmds:
       - cargo clippy --all
+      - task: client:lint
 
   lint:fix:
     desc: lint applications and fix them if possible
     cmds:
       - cargo clippy --fix --allow-dirty --all
+      - task: client:lint:fix
 
   format:
     desc: format applications

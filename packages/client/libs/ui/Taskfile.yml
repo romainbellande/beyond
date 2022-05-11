@@ -1,0 +1,17 @@
+version: '3'
+
+tasks:
+  storybook:
+    desc: start storybook
+    cmds:
+      - pnpm nx run ui:storybook
+
+  test:
+    desc: start UI tests
+    cmds:
+      - pnpm nx run ui:test -u
+
+  gen:component:
+    desc: generate a new UI component
+    cmds:
+      - npx hygen ui component

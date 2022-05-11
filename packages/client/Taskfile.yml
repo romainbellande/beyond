@@ -1,32 +1,20 @@
 version: '3'
 
 includes:
-  shared:
-    taskfile: ../../SharedTaskfile.yml
-    dir: ./
+  ui: ./libs/ui
 
 tasks:
   start:
     desc: start client
-    deps:
-      - task: serve
-      - task: gen:css:watch
-
-  serve:
     cmds:
-      - trunk serve
+      - pnpm start beyond
 
-  gen:css:
-    env:
-      NODE_ENV: production
-    sources:
-      - ./src/**/*.rs
-      - ./index.html
-      - ./src/**/*.html
-      - ./src/**/*.css
+  lint:
+    desc: lint
     cmds:
-      - tailwindcss -c ./tailwind.config.js -o ./dist/tailwind.css --minify
+      - pnpm lint:all
 
-  gen:css:watch:
+  lint:fix:
+    desc: lint
     cmds:
-      - task --watch "gen:css"
+      - pnpm lint:all --fix
