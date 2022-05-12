@@ -1,9 +1,0 @@
-[workspace]
-
-members = [
-    "packages/server",
-    "packages/core",
-    "packages/gen-planet-name"
-]
-
-default-members = ["packages/server"]
