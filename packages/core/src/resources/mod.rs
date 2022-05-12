@@ -10,7 +10,6 @@ pub const WOOD: &str = "wood";
 pub const SAND: &str = "sand";
 pub const OIL: &str = "oil";
 
-
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize, Eq)]
 pub struct Resource {
     pub reference: String,
@@ -63,10 +62,13 @@ impl Resource {
             let resource_config_to_add: ResourceConfig =
                 resource_config_list[resource_index].clone();
 
-            if !resources.clone().iter().any(|item| item.reference == resource_config_to_add.reference) {
+            if !resources
+                .clone()
+                .iter()
+                .any(|item| item.reference == resource_config_to_add.reference)
+            {
                 resources.push(Resource::new(resource_config_to_add.reference.to_string()));
             }
-
         }
 
         resources

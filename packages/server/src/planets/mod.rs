@@ -1,4 +1,4 @@
-use beyond_core::entities::planet::{AppCollection, Planet};
+use beyond_core::entities::{planet::Planet, AppCollection};
 use futures::stream::TryStreamExt;
 use mongodb::{Collection, Database};
 

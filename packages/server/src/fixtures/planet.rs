@@ -1,5 +1,5 @@
-use beyond_core::entities::planet::AppCollection;
 use beyond_core::entities::planet::Planet;
+use beyond_core::entities::AppCollection;
 use mongodb::Database;
 
 pub async fn fixture(db: Database) {
@@ -12,7 +12,7 @@ pub async fn fixture(db: Database) {
         )
     });
 
-    let planets: Vec<Planet> = Planet::rand("./planets.txt".to_string(), 1200);
+    let planets: Vec<Planet> = Planet::rand("./planets.txt".to_string(), 100);
 
     collection
         .insert_many(planets.clone(), None)

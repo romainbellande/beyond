@@ -1,3 +1,7 @@
+pub mod controller;
+pub mod hash;
+pub mod web_error;
+
 pub fn fibonacci(n: u32) -> u32 {
     match n {
         0 => panic!("zero is not a right argument to fibonacci()!"),
