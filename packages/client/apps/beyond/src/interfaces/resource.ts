@@ -1,4 +1,11 @@
+export enum ResourceRef {
+  Iron = 'iron',
+  Wood = 'wood',
+  Sand = 'sand',
+  Oil = 'oil',
+}
+
 export interface Resource {
-  reference: string;
+  reference: ResourceRef;
   density: number;
 }

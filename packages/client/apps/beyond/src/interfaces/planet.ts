@@ -1,4 +1,5 @@
 import { Coordinates } from './coordinates';
+import { Resource } from './resource';
 // https://www.solarsystemscope.com/textures/
 
 export enum PlanetType {
@@ -18,7 +19,7 @@ export enum PlanetType {
 export interface Planet {
   id: string;
   name: string;
-  resources: [];
+  resources: Resource[];
   coordinates: Coordinates;
   type: PlanetType;
 }

@@ -1,1 +1,21 @@
 /* You can add global styles to this file, and also import other style files */
+@tailwind components;
+@tailwind base;
+@tailwind utilities;
+
+body {
+  font-size: 16px;
+  font-family: 'Nunito', sans-serif;
+  @apply text-slate-200;
+}
+
+* {
+  &:focus {
+    outline: none;
+  }
+}
+
+.capitalize-first::first-letter {
+  text-transform: capitalize;
+}
+

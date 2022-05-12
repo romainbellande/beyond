@@ -1,9 +1,11 @@
 import { render } from '@testing-library/react';
-import { ThemedSuspense } from './ThemedSuspense';
+import { Button, ButtonProps } from './Button';
 import '@testing-library/jest-dom';
 
 test('it can render', async () => {
-  const { baseElement } = render(<ThemedSuspense />);
+  const props: ButtonProps = {};
+
+  const { baseElement } = render(<Button {...props} />);
 
   expect(baseElement).toMatchSnapshot();
 });

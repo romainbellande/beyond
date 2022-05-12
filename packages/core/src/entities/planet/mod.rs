@@ -67,7 +67,7 @@ impl Coordinates {
         Coordinates {
             x: rng.gen_range(-1000..1000),
             y: rng.gen_range(-1000..1000),
-            z: rng.gen_range(-1000..1000),
+            z: rng.gen_range(-10..10),
         }
     }
 }
