@@ -63,7 +63,10 @@ impl Resource {
             let resource_config_to_add: ResourceConfig =
                 resource_config_list[resource_index].clone();
 
-            resources.push(Resource::new(resource_config_to_add.reference.to_string()));
+            if !resources.clone().iter().any(|item| item.reference == resource_config_to_add.reference) {
+                resources.push(Resource::new(resource_config_to_add.reference.to_string()));
+            }
+
         }
 
         resources

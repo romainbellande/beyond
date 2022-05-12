@@ -7,7 +7,7 @@ interface Props {
 function Main({ children }: Props) {
   return (
     <main className="h-full w-full overflow-y-auto">
-      <div className="container grid px-6 mx-auto">{children}</div>
+      <div className="mx-auto h-full overflow-hidden">{children}</div>
     </main>
   );
 }

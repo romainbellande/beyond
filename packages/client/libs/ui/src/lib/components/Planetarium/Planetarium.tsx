@@ -1,4 +1,4 @@
-import { useRef, useState, FC, useCallback, useMemo } from 'react';
+import { useRef, useState, FC, useCallback, useMemo, useEffect } from 'react';
 import ForceGraph3D, { GraphData, NodeObject } from 'react-force-graph-3d';
 import { Texture } from 'three';
 
@@ -10,63 +10,83 @@ import {
 } from '@client/beyond/utils';
 import { Planet } from '@client/beyond/interfaces';
 
-interface PlanetariumProps {
+export interface PlanetariumProps {
   planets: Planet[];
+  onPlanetSelect(planet: Planet): void;
 }
 
 export const Planetarium: FC<PlanetariumProps> = (props) => {
-  const { planets } = props;
-  const [textures, setTextures] = useState<Record<string, Texture>>();
+  const { planets, onPlanetSelect } = props;
+  const [textures, setTextures] = useState<Record<string, Texture>>({});
   const [skyboxTexture, setSkyboxTexture] = useState<Texture>();
   const [skyboxCreated, setSkyboxCreated] = useState(false);
-  const [selectedPlanet, setSelectedPlanet] = useState<Planet>();
+  const [height, setHeight] = useState(0);
+  const [width, setWidth] = useState(0);
   const fgRef = useRef<any>();
+
+  const parentDiv = useCallback((node) => {
+    if (node !== null) {
+      setHeight(node.getBoundingClientRect().height);
+      setWidth(node.getBoundingClientRect().width);
+    }
+  }, []);
 
   useMemo(() => {
     async function loadMaterials() {
       try {
         const texturesTmp = await loadPlanetTextures();
-        setSkyboxTexture(await loadTexture('/assets/images/skybox.jpg'));
-        console.log(`textures loaded: ${Object.keys(texturesTmp).length}`);
+        const skyboxTextureTmp = await loadTexture('/assets/images/skybox.jpg');
+        setSkyboxTexture(skyboxTextureTmp);
         setTextures(texturesTmp);
       } catch (error) {
         console.error(error);
       }
     }
-
     if (!textures || !skyboxTexture) {
-      loadMaterials();
+      return loadMaterials();
     }
+    return false;
   }, [textures, skyboxTexture]);
 
-  const data: GraphData = {
-    nodes: planets.map(({ id, coordinates, type }) => ({
-      id,
-      ...coordinates,
-      type,
-    })),
-    links: planets.map(({ id }, idx) => {
-      const idxTmp = Math.abs(Math.round(Math.random() * (idx - 1)));
-      return {
-        source: id,
-        target: planets[idxTmp].id,
-        value: Math.round(Math.random() * 5),
-      };
+  const data: GraphData = useMemo(
+    () => ({
+      nodes: planets.map(({ id, coordinates, type }) => ({
+        id,
+        ...coordinates,
+        type,
+      })),
+      links: planets.map(({ id }, idx) => {
+        const idxTmp = Math.abs(Math.round(Math.random() * (idx - 1)));
+        return {
+          source: id,
+          target: planets[idxTmp].id,
+          value: Math.round(Math.random() * 5),
+        };
+      }),
     }),
-  };
+    [planets]
+  );
 
-  useMemo(() => {
-    if (fgRef.current && skyboxTexture && !skyboxCreated) {
+  const isReady = useMemo<boolean>(
+    () => Boolean(Object.keys(textures).length > 0 && width > 0 && height > 0),
+    [textures, width, height]
+  );
+
+  useEffect(() => {
+    if (fgRef.current && isReady && skyboxTexture && !skyboxCreated) {
       const skybox = createSkybox(skyboxTexture);
       fgRef.current.scene().add(skybox);
+      console.log('skybox added to scene');
       setSkyboxCreated(true);
     }
-  }, [skyboxCreated, skyboxTexture]);
+  }, [skyboxCreated, skyboxTexture, fgRef, isReady]);
 
   const handleClick = useCallback(
     (node: NodeObject) => {
       const planet = planets.find((item) => node.id === item.id);
-      // setSelectedPlanet(planet);
+      if (planet) {
+        onPlanetSelect(planet);
+      }
       const { x = 0, y = 0, z = 0 } = node;
       // Aim at node from outside it1
       const distance = 40;
@@ -78,33 +98,30 @@ export const Planetarium: FC<PlanetariumProps> = (props) => {
         3000 // ms transition duration
       );
     },
-    [planets]
+    [planets, fgRef, onPlanetSelect]
   );
 
   const findPlanetTypeById = (id: string): string | undefined =>
     planets.find((planet) => planet.id === id)?.type;
 
   return (
-    <div>
-      {textures && skyboxTexture && (
-        <div id="planetarium">
+    <div ref={parentDiv} className="w-full h-full">
+      {isReady && (
+        <div id="planetarium" className="overflow-hidden">
           <ForceGraph3D
+            numDimensions={2}
             ref={fgRef}
             graphData={data}
             enableNodeDrag={false}
             showNavInfo={false}
             onNodeClick={handleClick}
-            onEngineStop={() => fgRef.current.zoomToFit(400)}
-            // linkDirectionalParticles="value"
-            // linkDirectionalParticleSpeed={(d) => (d as any).value * 0.001}
-            // onRenderFramePre={onRenderFramePre}
+            // onEngineStop={() => fgRef.current.zoomToFit(400)}
             nodeThreeObject={({ id }) => {
               const type = findPlanetTypeById(id as string);
               const texture = type ? textures[type] : textures[0];
               return getPlanetMaterial(texture);
             }}
           />
-          <div>Hello!</div>
         </div>
       )}
     </div>

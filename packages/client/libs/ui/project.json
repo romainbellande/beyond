@@ -11,11 +11,10 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/ui"],
+      "builder": "@nrwl/workspace:run-commands",
       "options": {
-        "jestConfig": "libs/ui/jest.config.ts",
-        "passWithNoTests": true
+        "command": "cd libs/ui && npx jest --config=jest.config.ts"
       }
     },
     "storybook": {
