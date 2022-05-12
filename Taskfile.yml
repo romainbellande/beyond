@@ -7,12 +7,6 @@ includes:
   client:
     taskfile: ./packages/client/Taskfile.yml
     dir: ./packages/client
-  core:
-    taskfile: ./packages/core/Taskfile.yml
-    dir: ./packages/core
-  gen-planet-name:
-    taskfile: ./packages/gen-planet-name/Taskfile.yml
-    dir: ./packages/gen-planet-name
 
 tasks:
   init:
@@ -37,31 +31,29 @@ tasks:
   check:
     desc: check applications
     cmds:
-      - cargo check --all
+      - task: server:check
 
   test:
     desc: test applications
     cmds:
-      - task: server:shared:test
-      - task: core:shared:test
-      - task: gen-planet-name:shared:test
+      - task: server:test
 
   lint:
     desc: lint applications
     cmds:
-      - cargo clippy --all
+      - task: server:lint
       - task: client:lint
 
   lint:fix:
     desc: lint applications and fix them if possible
     cmds:
-      - cargo clippy --fix --allow-dirty --all
+      - task: server:lint:fix
       - task: client:lint:fix
 
   format:
-    desc: format applications
+    desc: format
     cmds:
-      - cargo +nightly fmt --all
+      - task: server:format
 
   fix:all:
     desc: fix all
