@@ -1,6 +1,6 @@
 use crate::entities::planet::Planet;
+use crate::events::Event::{GetPlanets, GetPlanetsResponse};
 use serde::{Deserialize, Serialize};
-use crate::events::Event::{GetPlanetsResponse, GetPlanets};
 use serde_json;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -99,9 +99,6 @@ impl ClientEvent {
 //     }
 // }
 
-
-
-
 // #[derive(Serialize, Deserialize, Debug)]
 // pub enum ServerEvent {
 //     GetPlanetsResponse {
@@ -119,8 +116,6 @@ impl ClientEvent {
 //         bincode::deserialize(&data[..]).unwrap()
 //     }
 // }
-
-
 
 // #[derive(Serialize, Deserialize, Debug)]
 // pub enum ClientEvent {

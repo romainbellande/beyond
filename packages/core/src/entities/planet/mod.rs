@@ -1,13 +1,10 @@
+use super::AppCollection;
 use crate::resources::Resource;
+use bson::oid::ObjectId;
 use gen_planet_name::PlanetName;
+use rand::seq::SliceRandom;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
-use bson::oid::ObjectId;
-use rand::seq::SliceRandom;
-
-pub trait AppCollection {
-    fn get_collection_name() -> String;
-}
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize, Eq)]
 pub struct Planet {
@@ -22,7 +19,19 @@ pub struct Planet {
 impl Planet {
     pub fn rand_type() -> String {
         let mut rng = rand::thread_rng();
-        let types: Vec<&str> = vec!["ocean", "ice", "exoplanet", "carbon", "desert", "lava", "iron", "hydrogen", "silicate", "telluric", "helium"];
+        let types: Vec<&str> = vec![
+            "ocean",
+            "ice",
+            "exoplanet",
+            "carbon",
+            "desert",
+            "lava",
+            "iron",
+            "hydrogen",
+            "silicate",
+            "telluric",
+            "helium",
+        ];
         types.choose(&mut rng).unwrap().to_string()
     }
 
@@ -32,7 +41,7 @@ impl Planet {
             coordinates: Coordinates::rand(),
             name: Some(PlanetName::new(filepath).generate()),
             resources: Resource::rand_list(),
-            ty: Self::rand_type()
+            ty: Self::rand_type(),
         }
     }
 

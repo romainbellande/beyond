@@ -1,5 +1,3 @@
-
-
 use std::ops::Deref;
 
 use crate::planets::PlanetRepository;
@@ -41,7 +39,8 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for AppWs {
                             let planets = planet_repository.find().await;
 
                             if let Some(planets) = planets {
-                                let bin_res = ServerEvent::GetPlanetsResponse(planets).into_u8_array();
+                                let bin_res =
+                                    ServerEvent::GetPlanetsResponse(planets).into_u8_array();
                                 recipient.do_send(BinaryMessage(bin_res));
                             }
                         };
