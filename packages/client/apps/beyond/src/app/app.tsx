@@ -4,7 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import { useAppDispatch } from '@client/beyond/store';
 import { WsMessage } from '@client/beyond/interfaces/ws-message.interface';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
-import { setConnect, setWs } from '@client/beyond/store/ws';
+import { setConnect } from '@client/beyond/store/ws';
 import { findPlanets } from '@client/beyond/store/planets';
 import { config } from '@client/beyond/config';
 
@@ -30,7 +30,7 @@ export function App() {
       dispatch(message.getAction());
     };
 
-    dispatch(setWs(ws));
+    window.ws = ws;
   }, []);
 
   return (

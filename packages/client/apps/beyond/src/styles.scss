@@ -19,3 +19,38 @@ body {
   text-transform: capitalize;
 }
 
+
+@layer components {
+  .field {
+    @apply appearance-none;
+    @apply rounded;
+    @apply relative;
+    @apply block;
+    @apply w-full;
+    @apply px-3;
+    @apply py-2;
+    @apply border;
+    @apply border-gray-300;
+    @apply placeholder-gray-500;
+    @apply text-gray-900;
+    @apply focus:outline-none;
+    @apply focus:ring-indigo-500;
+    @apply focus:border-indigo-500;
+    @apply focus:z-10;
+    @apply sm:text-sm;
+  }
+
+  .error-message {
+    @apply text-red-500;
+    @apply pt-3;
+  }
+
+  .field-group {
+    @apply flex;
+    @apply flex-col;
+    @apply space-y-4;
+    @apply sm:space-y-0;
+    @apply sm:flex-row;
+    @apply sm:space-x-4;
+  }
+}

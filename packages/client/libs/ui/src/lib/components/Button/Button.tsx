@@ -37,22 +37,26 @@ export const Button: FC<ButtonProps> = ({
   iconDirection = 'left',
 }) => {
   const layoutStyleMap: Record<Layout, Argument[]> = {
-    primary: ['bg-slate-600', disabled ? 'bg-slate-300' : 'hover:bg-slate-500'],
-    outline: [
-      'border border-slate-500',
+    primary: [
+      'bg-indigo-600',
       disabled
-        ? 'border-0 bg-slate-100 text-slate-300 cursor-disabled'
-        : 'hover:border-slate-400 hover:text-slate-400 text-slate-500',
+        ? 'bg-indigo-300'
+        : 'hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500',
+    ],
+    outline: [
+      'border border-indigo-500',
+      disabled
+        ? 'border-0 bg-indigo-100 text-indigo-300 cursor-disabled'
+        : 'hover:border-indigo-400 hover:text-indigo-400 text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500',
     ],
     link: [
-      'text-slate-400',
-      disabled ? 'text-slate-300' : 'hover:bg-slate-100',
+      'text-indigo-400',
+      disabled ? 'text-indigo-300' : 'hover:bg-indigo-100',
     ],
   };
 
   const defaultClasses: Argument[] = layoutStyleMap[layout || 'primary'];
   const Icon = () => <span className="w-5 h-5">{icon}</span>;
-  const hasIcon = Boolean(icon);
 
   return (
     <button
@@ -60,7 +64,7 @@ export const Button: FC<ButtonProps> = ({
         className,
         ...defaultClasses,
         sizeStyleMap[size || 'md'],
-        'rounded-lg font-semibold flex items-center h-fit w-fit',
+        'group rounded-lg font-semibold flex justify-center items-center h-fit w-full relative',
         { 'cursor-not-allowed': disabled }
       )}
       disabled={disabled}
@@ -68,9 +72,17 @@ export const Button: FC<ButtonProps> = ({
       type={type}
       onClick={onClick}
     >
-      {hasIcon && iconDirection === 'left' ? <Icon /> : null}
+      {icon ? (
+        <span
+          className={classNames(
+            'w-5 h-5 absolute top-1/2 -translate-y-1/2 flex items-center group-hover:text-indigo-400',
+            iconDirection === 'left' ? 'left-3' : 'right-3'
+          )}
+        >
+          {icon}
+        </span>
+      ) : null}
       <span className="whitespace-nowrap capitalize-first ">{children}</span>
-      {hasIcon && iconDirection === 'right' ? <Icon /> : null}
     </button>
   );
 };
