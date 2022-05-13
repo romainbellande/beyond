@@ -11,21 +11,19 @@ use config::Config;
 use database::DatabaseManager;
 use dotenvy::dotenv;
 use websocket::AppWs;
-// use mongodb::Database;
+use serde::Deserialize;
 
 pub async fn start() -> std::io::Result<()> {
     dotenv().ok();
     setup_logs();
 
-    log::info!("starting HTTP server at http://127.0.0.1:3000");
+    log::info!("starting HTTP server at http://0.0.0.0:3000");
 
     let config = Config::new();
 
     let database_manager = DatabaseManager::new(config.database_url, config.database_name);
 
     let db = database_manager.start().await;
-
-    // let state: AppState = AppState { db };
 
     fixtures::execute_fixtures(db.clone()).await;
 
@@ -36,16 +34,24 @@ pub async fn start() -> std::io::Result<()> {
             .route("/ws/", web::get().to(index))
             .service(web::scope("api/v1").service(auth::controller::controller()))
     })
-    .bind(("127.0.0.1", 3000))?
+    .bind(("0.0.0.0", 3000))?
     .run()
     .await
+}
+
+#[derive(Deserialize)]
+struct WsAuth {
+    jwt: String,
 }
 
 async fn index(
     req: HttpRequest,
     stream: web::Payload,
     data: web::Data<AppWs>,
+    ws_auth: web::Query<WsAuth>
 ) -> Result<HttpResponse, Error> {
+    println!("jwt: {}", ws_auth.jwt);
+
     let resp = ws::start(
         AppWs {
             db: data.db.clone(),
@@ -63,7 +69,3 @@ pub fn setup_logs() {
     std::env::set_var("RUST_LOG", "actix_web=warn");
     fast_log::init(fast_log::config::Config::new().console()).unwrap();
 }
-
-// pub struct AppState {
-//     pub db: Database,
-// }

@@ -1,6 +1,33 @@
 version: '3.2'
 
 services:
+  traefik:
+    image: "traefik:v2.5"
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.useBindPortIP=true"
+      - "traefik.http.routers.traefik=true"
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.entrypoints=https"
+    ports:
+      - "443:443"
+      - "80:80"
+      - "8080:8080"
+      - "8085:8085"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/config.yml:/etc/traefik/config.yml:ro
+      - ./traefik/certs:/etc/certs:ro
+    depends_on:
+      - mongo
+      - server
+      - client
+
   mongo:
     image: 'mongo:5.0.6-focal'
     environment:
@@ -11,6 +38,50 @@ services:
       - 27040:27017
     volumes:
       - mongo-data:/data/db
+
+  client:
+    image: node:16-buster
+    user: "${UID}:${UID}"
+    working_dir: /home/node
+    command: yarn start beyond --host 0.0.0.0 --port 80
+    environment:
+      NODE_ENV: development
+      ENVIRONMENT: "development"
+      NX_WS_URL: ws://127.0.0.1:3000/ws/
+      NX_API_URL: https://api.beyond.localhost/api/v1
+    volumes:
+      - ./packages/client:/home/node
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.client.rule=Host(`beyond.localhost`)"
+      - "traefik.http.routers.client.entrypoints=http,https"
+      - 'traefik.http.services.client.loadbalancer.server.port=80'
+      - "traefik.http.routers.client.tls=true"
+    depends_on:
+      - server
+
+  server:
+    build:
+      context: ./packages/server
+      dockerfile: ./Dockerfile
+      args:
+        UID: $UID
+    command: "cargo watch -i ~/.cargo -x run"
+    environment:
+      DATABASE_URL: mongodb://myuser:mypass@mongo
+      DATABASE_NAME: test
+      JWT_EXP: 10000000000
+      JWT_SECRET: I2ExT1lFdE4xYlhON0o3U2c5dFlobHJqI21yOVQK
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./packages/server/:/home/rust/server
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.beyond-api.rule=Host(`api.beyond.localhost`)"
+      - "traefik.http.routers.beyond-api.entrypoints=http,https"
+      - "traefik.http.services.beyond-api.loadbalancer.server.port=3000"
+      - "traefik.http.routers.beyond-api.tls=true"
 
 volumes:
   mongo-data: {}

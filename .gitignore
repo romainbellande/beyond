@@ -10,3 +10,5 @@ Cargo.lock
 **/*.rs.bk
 dist
 .task
+/traefik/certs/*
+!/traefik/certs/.gitkeep
