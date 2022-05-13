@@ -12,9 +12,9 @@ tasks:
   init:
     desc: initialize projects
     cmds:
-      - cargo install cargo-watch cargo-generate wasm-bindgen-cli wasm-pack trunk
-      - rustup target add wasm32-unknown-unknown
-      - npm install -g tailwindcss
+      - cargo install cargo-watch
+      - mkcert -install
+      - task: certs
 
   start:
     desc: start all applications
@@ -61,3 +61,8 @@ tasks:
       - task: lint:fix
       - task: format
       - task: check
+
+  certs:
+    desc: install certificates
+    cmds:
+      - mkcert -cert-file traefik/certs/local-cert.pem -key-file traefik/certs/local-key.pem "beyond.localhost" "*.beyond.localhost"

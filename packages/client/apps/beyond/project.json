@@ -47,7 +47,11 @@
       "defaultConfiguration": "development",
       "options": {
         "buildTarget": "beyond:build",
-        "hmr": true
+        "hmr": true,
+        "disableHostCheck": true,
+        "allowedHosts": "beyond.localhost",
+        "host": "0.0.0.0",
+        "port": 80
       },
       "configurations": {
         "development": {
