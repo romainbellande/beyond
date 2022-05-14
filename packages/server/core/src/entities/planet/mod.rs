@@ -1,3 +1,5 @@
+mod resource;
+
 use super::AppCollection;
 use crate::resources::Resource;
 use bson::oid::ObjectId;
@@ -5,12 +7,13 @@ use gen_planet_name::PlanetName;
 use rand::seq::SliceRandom;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
+use resource::PlanetResource;
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize, Eq)]
 pub struct Planet {
     pub id: String,
     pub name: Option<String>,
-    pub resources: Vec<Resource>,
+    pub resources: Vec<PlanetResource>,
     pub coordinates: Coordinates,
     #[serde(rename = "type")]
     pub ty: String,
@@ -40,7 +43,7 @@ impl Planet {
             id: ObjectId::new().to_string(),
             coordinates: Coordinates::rand(),
             name: Some(PlanetName::new(filepath).generate()),
-            resources: Resource::rand_list(),
+            resources: PlanetResource::rand_list(),
             ty: Self::rand_type(),
         }
     }
@@ -80,3 +83,4 @@ impl Coordinates {
         }
     }
 }
+
