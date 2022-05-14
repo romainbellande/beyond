@@ -3,6 +3,9 @@ use crate::utils::hash::hash_password;
 use bson::oid::ObjectId;
 use serde::{Deserialize, Serialize};
 
+mod inventory;
+mod base;
+
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize, Eq)]
 pub struct PlayerDto {
     pub username: String,

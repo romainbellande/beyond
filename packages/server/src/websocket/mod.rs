@@ -1,20 +1,12 @@
-use std::ops::Deref;
+mod get_planets;
+mod binary_message;
+mod app_ws;
 
-use crate::planets::PlanetRepository;
-use actix::prelude::*;
-use actix::{Actor, AsyncContext, StreamHandler, WrapFuture};
-use actix_web::web::Bytes;
+use actix::{StreamHandler,};
 use actix_web_actors::ws;
-use beyond_core::events::{ClientEvent, ServerEvent};
-use mongodb::Database;
-
-pub struct AppWs {
-    pub db: Database,
-}
-
-impl Actor for AppWs {
-    type Context = ws::WebsocketContext<Self>;
-}
+use beyond_core::events::{ClientEvent};
+use app_ws::AppWs;
+use get_planets::get_planets;
 
 /// Handler for ws::Message message
 impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for AppWs {
@@ -29,23 +21,7 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for AppWs {
 
                 match ws_event {
                     ClientEvent::GetPlanets => {
-                        let db = self.db.clone();
-                        let planet_repository = PlanetRepository::new(db);
-
-                        let recipient = ctx.address().recipient();
-
-                        let future = async move {
-                            println!("request: get planet");
-                            let planets = planet_repository.find().await;
-
-                            if let Some(planets) = planets {
-                                let bin_res =
-                                    ServerEvent::GetPlanetsResponse(planets).into_u8_array();
-                                recipient.do_send(BinaryMessage(bin_res));
-                            }
-                        };
-
-                        future.into_actor(self).spawn(ctx);
+                        get_planets(self, ctx);
                     }
                     unknown_request => {
                         print!("unknown request: {:?}", unknown_request);
@@ -54,40 +30,5 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for AppWs {
             }
             _ => (),
         }
-    }
-}
-
-#[derive(Message)]
-#[rtype(result = "()")]
-struct BinaryMessage(Vec<u8>);
-
-impl Deref for BinaryMessage {
-    type Target = Vec<u8>;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-
-impl Into<Bytes> for BinaryMessage {
-    fn into(self) -> Bytes {
-        self.0.into()
-    }
-}
-
-impl StreamHandler<Result<BinaryMessage, ws::ProtocolError>> for AppWs {
-    fn handle(&mut self, msg: Result<BinaryMessage, ws::ProtocolError>, ctx: &mut Self::Context) {
-        match msg {
-            Ok(bin) => ctx.binary(bin),
-            _ => (), //Handle errors
-        }
-    }
-}
-
-impl Handler<BinaryMessage> for AppWs {
-    type Result = ();
-
-    fn handle(&mut self, msg: BinaryMessage, ctx: &mut Self::Context) {
-        ctx.binary(msg);
     }
 }
