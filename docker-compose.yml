@@ -70,7 +70,7 @@ services:
     environment:
       DATABASE_URL: mongodb://myuser:mypass@mongo
       DATABASE_NAME: test
-      JWT_EXP: 10000000000
+      JWT_EXP: 10000000000000
       JWT_SECRET: I2ExT1lFdE4xYlhON0o3U2c5dFlobHJqI21yOVQK
     ports:
       - "3000:3000"
