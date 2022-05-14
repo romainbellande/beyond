@@ -4,6 +4,7 @@ import { Navigate } from 'react-router-dom';
 import { suspenseRouteWrapper } from '@client/beyond/utils';
 
 const NotFound = lazy(() => import('../pages/404'));
+const Dashboard = lazy(() => import('../pages/Dashboard'));
 const Galaxy = lazy(() => import('../pages/Dashboard/Galaxy'));
 const Portal = lazy(() => import('../pages/Portal'));
 const Login = lazy(() => import('../pages/Portal/Login'));
@@ -12,7 +13,17 @@ const Register = lazy(() => import('../pages/Portal/Register'));
 export const routes: RouteObject[] = [
   {
     path: '/',
-    element: <Navigate to="/galaxy" />,
+    element: <Dashboard />,
+    children: [
+      {
+        path: '',
+        element: <Navigate to="galaxy" />,
+      },
+      {
+        path: 'galaxy',
+        element: <Galaxy />,
+      },
+    ],
   },
   {
     path: '/portal',
@@ -31,10 +42,6 @@ export const routes: RouteObject[] = [
         element: <Register />,
       },
     ],
-  },
-  {
-    path: '/galaxy',
-    element: <Galaxy />,
   },
   {
     path: '*',

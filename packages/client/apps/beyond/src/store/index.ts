@@ -3,6 +3,8 @@ import planetsReducer, { actions as planetsActions } from './planets';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import wsReducer from './ws/ws.slice';
 import { wsMiddleware } from './ws';
+import { beyondApi } from './api';
+import playerReducer from './player';
 
 export const actions = {
   ...planetsActions,
@@ -11,12 +13,16 @@ export const actions = {
 
 export const store = configureStore({
   reducer: {
-    // [api.reducerPath]: api.reducer,
+    [beyondApi.reducerPath]: beyondApi.reducer,
     wsReducer,
     planetsReducer,
+    playerReducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(wsMiddleware.middleware),
+    getDefaultMiddleware().concat(
+      wsMiddleware.middleware,
+      beyondApi.middleware
+    ),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

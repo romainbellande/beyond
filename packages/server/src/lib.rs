@@ -12,6 +12,7 @@ use database::DatabaseManager;
 use dotenvy::dotenv;
 use websocket::AppWs;
 use serde::Deserialize;
+use actix_cors::Cors;
 
 pub async fn start() -> std::io::Result<()> {
     dotenv().ok();
@@ -28,7 +29,10 @@ pub async fn start() -> std::io::Result<()> {
     fixtures::execute_fixtures(db.clone()).await;
 
     HttpServer::new(move || {
+        let cors = Cors::permissive();
+
         App::new()
+            .wrap(cors)
             .wrap(Logger::new("%r %U [%D ms][%s]"))
             .app_data(web::Data::new(AppWs { db: db.clone() }))
             .route("/ws/", web::get().to(index))

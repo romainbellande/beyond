@@ -4,6 +4,7 @@ import { LockClosedIcon } from '@heroicons/react/solid';
 import { Formik, Form, ErrorMessage, Field } from 'formik';
 import { Credentials } from '@client/beyond/interfaces';
 import * as Yup from 'yup';
+import { useRegisterMutation } from '@client/beyond/store/api';
 
 const validationSchema = Yup.object().shape({
   username: Yup.string().required(),
@@ -11,13 +12,15 @@ const validationSchema = Yup.object().shape({
 });
 
 const Register: FC = () => {
+  const [register, result] = useRegisterMutation();
+
   const initialValues: Credentials = {
     username: '',
     password: '',
   };
 
-  const onSubmit = (values: Credentials) => {
-    console.log('values', values);
+  const onSubmit = async (credentials: Credentials) => {
+    await register(credentials);
   };
 
   return (
